@@ -28,11 +28,20 @@ class User extends Authenticatable
 
     protected $hidden = ['password'];
 
-    protected $casts = [
-        'metadata' => 'array',
-        'confirmed_at' => 'datetime',
-        'birth_date' => 'date',
-    ];
+    // ← JWT: Обязательные методы
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [
+            'email' => $this->email,
+            'name' => $this->name,
+            'role' => $this->role?->name,
+        ];
+    }
 
     public function role(): BelongsTo
     {
@@ -54,7 +63,7 @@ class User extends Authenticatable
         return $this->hasMany(Booking::class);
     }
 
-    public function memberships(): HasMany
+    public function memberships()
     {
         return $this->hasMany(Membership::class);
     }

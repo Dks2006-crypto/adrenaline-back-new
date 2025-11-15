@@ -59,7 +59,9 @@ class UserResource extends Resource
                 TextInput::make('password_confirmation')
                     ->password()
                     ->dehydrated(false),
-                TextInput::make('name'),
+                TextInput::make('name')
+                    ->required()
+                    ->maxLength(255),
                 TextInput::make('last_name'),
                 DatePicker::make('birth_date'),
                 Select::make('gender')

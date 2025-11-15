@@ -3,8 +3,6 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Form extends Model
 {
@@ -16,8 +14,7 @@ class Form extends Model
         'branch_id',
         'starts_at',
         'ends_at',
-        'capacity',
-        'recurrence_rule'
+        'capacity'
     ];
 
     protected $casts = [
@@ -25,28 +22,19 @@ class Form extends Model
         'ends_at' => 'datetime',
     ];
 
-    public function service(): BelongsTo
+    public function service()
     {
         return $this->belongsTo(Service::class);
     }
 
-    public function trainer(): BelongsTo
-    {
-        return $this->belongsTo(Trainer::class);
-    }
-
-    public function branch(): BelongsTo
-    {
-        return $this->belongsTo(Branch::class);
-    }
-
-    public function bookings(): HasMany
+    public function bookings()
     {
         return $this->hasMany(Booking::class, 'class_id');
     }
 
-    public function availableSlots(): int
+    public function availableSlots()
     {
-        return $this->capacity - $this->bookings()->where('status', 'confirmed')->count();
+        $booked = $this->bookings()->where('status', 'confirmed')->count();
+        return $this->capacity - $booked;
     }
 }

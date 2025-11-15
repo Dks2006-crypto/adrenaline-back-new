@@ -26,7 +26,7 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function class(): BelongsTo
+    public function form()
     {
         return $this->belongsTo(Form::class, 'class_id');
     }
