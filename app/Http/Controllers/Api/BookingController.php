@@ -45,7 +45,7 @@ class BookingController extends Controller
                 $classId = $form->id;
             } else {
                 $trainer = User::where('id', $request->trainer_id)
-                    ->where('role_id', 2) // role_id = 2 для тренеров
+                    ->where('role_id', 2)
                     ->first();
 
                 if (!$trainer) {

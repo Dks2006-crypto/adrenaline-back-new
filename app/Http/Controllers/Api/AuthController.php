@@ -62,7 +62,7 @@ class AuthController extends Controller
     public function updateAvatar(Request $request)
     {
         $request->validate([
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240', // 5MB
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:10240',
         ]);
 
         $user = auth('jwt')->user();

@@ -13,46 +13,54 @@ class TrainerController extends Controller
     // Получение списка тренеров для публичной страницы
     public function indexPublic()
     {
-        $trainers = User::where('role_id', 2) // role_id = 2 для тренеров
+        $trainers = User::where('role_id', 2)
             ->select('id', 'name', 'last_name', 'avatar', 'bio', 'specialties', 'rating', 'reviews_count')
             ->get()
+            ->map(function ($trainer) {
+                $trainer->avatar_url = $trainer->avatar
+                    ? url('storage/' . $trainer->avatar) . '?t=' . time()
+                    : null;
+
+                return $trainer;
+            })
             ->makeHidden('avatar');
 
         return response()->json($trainers);
     }
 
+
     // Получение записей, привязанных к текущему авторизованному тренеру
     public function indexBookings()
-{
-    /** @var \App\Models\User $trainer */
-    $trainer = auth('jwt')->user();
+    {
+        /** @var \App\Models\User $trainer */
+        $trainer = auth('jwt')->user();
 
-    // Проверяем, что это тренер
-    if (!$trainer || $trainer->role_id !== 2) {
-        return response()->json(['error' => 'Доступ запрещен'], 403);
+        // Проверяем, что это тренер
+        if (!$trainer || $trainer->role_id !== 2) {
+            return response()->json(['error' => 'Доступ запрещен'], 403);
+        }
+
+        // Получение только персональных тренировок (class_id = null)
+        $bookings = Booking::query()
+            ->where('trainer_id', $trainer->id)
+            ->whereNull('class_id') // Только персональные тренировки
+            ->select('id', 'user_id', 'class_id', 'trainer_id', 'status', 'cancelled_at', 'note', 'created_at')
+            ->with([
+                'user:id,name,phone,email' // Клиент, который записался
+            ])
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // Добавить trainer_comment, если колонка существует
+        if (Schema::hasColumn('bookings', 'trainer_comment')) {
+            $bookings = $bookings->map(function ($booking) {
+                $booking->trainer_comment = $booking->trainer_comment ?? null;
+                return $booking;
+            });
+        }
+
+        return response()->json($bookings);
     }
-
-    // Получение только персональных тренировок (class_id = null)
-    $bookings = Booking::query()
-        ->where('trainer_id', $trainer->id)
-        ->whereNull('class_id') // Только персональные тренировки
-        ->select('id', 'user_id', 'class_id', 'trainer_id', 'status', 'cancelled_at', 'note', 'created_at')
-        ->with([
-            'user:id,name,phone,email' // Клиент, который записался
-        ])
-        ->orderBy('id', 'desc')
-        ->get();
-
-    // Добавить trainer_comment, если колонка существует
-    if (Schema::hasColumn('bookings', 'trainer_comment')) {
-        $bookings = $bookings->map(function ($booking) {
-            $booking->trainer_comment = $booking->trainer_comment ?? null;
-            return $booking;
-        });
-    }
-
-    return response()->json($bookings);
-}
 
     public function updateBookingStatus(Request $request, Booking $booking)
     {

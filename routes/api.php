@@ -13,11 +13,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('api.registe
 Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 Route::post('/refresh', [AuthController::class, 'refresh'])->name('api.refresh');
 
-Route::get('/public/trainers', function () {
-    return \App\Models\User::where('role_id', 2) // role_id = 2 для тренеров
-    ->select(['id', 'name', 'last_name', 'avatar', 'bio', 'specialties', 'rating', 'reviews_count'])
-    ->get();
-})->name('api.public.trainers');
+Route::get('/public/trainers', [TrainerController::class, 'indexPublic'])->name('api.public.trainers');
 
 Route::get('/services', fn() => Service::where('active', true)->get());
 Route::post('/purchase', [PurchaseController::class, 'store']);
