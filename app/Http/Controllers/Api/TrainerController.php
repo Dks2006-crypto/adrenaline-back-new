@@ -14,7 +14,7 @@ class TrainerController extends Controller
     public function indexPublic()
     {
         $trainers = User::where('role_id', 2)
-            ->select('id', 'name', 'last_name', 'avatar', 'bio', 'specialties', 'rating', 'reviews_count')
+            ->select('id', 'name', 'last_name', 'avatar', 'bio', 'specialties')
             ->get()
             ->map(function ($trainer) {
                 $trainer->avatar_url = $trainer->avatar

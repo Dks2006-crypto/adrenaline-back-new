@@ -27,8 +27,6 @@ return new class extends Migration
 
             $table->text('bio')->nullable();
             $table->json('specialties')->nullable();
-            $table->decimal('rating', 2, 1)->default(0.0);
-            $table->unsignedInteger('reviews_count')->default(0);
 
 
             $table->timestamps();

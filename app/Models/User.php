@@ -28,8 +28,6 @@ class User extends Authenticatable implements JWTSubject
         'avatar',
         'bio',
         'specialties',
-        'rating',
-        'reviews_count',
     ];
 
     protected $casts = [
@@ -37,7 +35,6 @@ class User extends Authenticatable implements JWTSubject
         'confirmed_at'  => 'datetime',
         'metadata'      => 'array',
         'specialties'   => 'array',
-        'rating'        => 'decimal:1',
     ];
 
     protected $hidden = ['password'];
