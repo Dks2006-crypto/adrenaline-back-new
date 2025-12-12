@@ -22,10 +22,6 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        if ($user->isDirty('role_id') && $user->hasRole('trainer')) {
-            $this->initializeTrainerFields($user);
-        }
-
         if ($user->isDirty('role_id') && $user->wasChanged('role_id')) {
             $previousRole = $user->getOriginal('role_id');
             $previousRoleName = \App\Models\Role::find($previousRole)?->name;
@@ -41,8 +37,6 @@ class UserObserver
         $user->update([
             'bio' => $user->bio ?? '',
             'specialties' => $user->specialties ?? [],
-            'rating' => 0.0,
-            'reviews_count' => 0,
         ]);
     }
 
@@ -51,8 +45,6 @@ class UserObserver
         $user->update([
             'bio' => null,
             'specialties' => null,
-            'rating' => null,
-            'reviews_count' => null,
         ]);
     }
 

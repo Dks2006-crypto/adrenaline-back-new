@@ -36,9 +36,14 @@ class Form extends Model
         return $this->hasMany(Booking::class, 'class_id');
     }
 
+    public function confirmedBookings()
+    {
+        return $this->bookings()->where('status', \App\Models\Booking::STATUS_CONFIRMED);
+    }
+
     public function availableSlots()
     {
-        $booked = $this->bookings()->where('status', 'confirmed')->count();
-        return $this->capacity - $booked;
+        $booked = $this->confirmedBookings()->count();
+        return max(0, $this->capacity - $booked);
     }
 }

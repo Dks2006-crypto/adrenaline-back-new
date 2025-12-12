@@ -12,11 +12,17 @@ class Booking extends Model
 
     use HasFactory;
 
+    // Статусы бронирований
+    const STATUS_PENDING = 'pending';
+    const STATUS_CONFIRMED = 'confirmed';
+    const STATUS_CANCELLED = 'cancelled';
+
     protected $table = 'bookings';
 
     protected $fillable = [
         'user_id',
         'class_id',
+        'group_class_id',
         'trainer_id',
         'status',
         'cancelled_at',
@@ -36,6 +42,11 @@ class Booking extends Model
     public function form()
     {
         return $this->belongsTo(Form::class, 'class_id');
+    }
+
+    public function groupClass()
+    {
+        return $this->belongsTo(GroupClass::class, 'group_class_id');
     }
 
     public function trainer(): BelongsTo

@@ -16,4 +16,16 @@ class ListBookings extends ListRecords
             CreateAction::make(),
         ];
     }
+
+    protected function getTableQuery(): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation|null
+    {
+        return parent::getTableQuery()->with([
+            'user',
+            'form.service',
+            'form.trainer',
+            'groupClass.service',
+            'groupClass.trainer',
+            'trainer'
+        ]);
+    }
 }

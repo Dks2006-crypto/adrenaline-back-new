@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('class_id')->nullable()->constrained('forms')->onDelete('set null');
+            $table->unsignedBigInteger('class_id')->nullable();
+            $table->unsignedBigInteger('group_class_id')->nullable();
+            $table->foreign('class_id')->references('id')->on('forms')->onDelete('set null');
+            $table->foreign('group_class_id')->references('id')->on('group_classes')->onDelete('set null');
             $table->foreignId('trainer_id')->nullable()->constrained('users')->onDelete('set null');
             $table->string('status')->default('pending');
             $table->timestamp('cancelled_at')->nullable();

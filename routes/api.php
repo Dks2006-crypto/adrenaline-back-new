@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\Api\MembershipController;
 use App\Http\Controllers\Api\TrainerController;
 use App\Http\Controllers\Api\SectionSettingController;
+use App\Http\Controllers\Api\GroupClassController;
 use App\Models\Form;
 use App\Models\Service;
 use App\Models\Coupon;
@@ -22,6 +23,10 @@ Route::get('/public/trainers', [TrainerController::class, 'indexPublic'])->name(
 
 Route::get('/services', fn() => Service::where('active', true)->get());
 Route::post('/purchase', [PurchaseController::class, 'store']);
+
+// Публичные эндпоинты для групповых занятий
+Route::get('/group-classes', [GroupClassController::class, 'indexPublic']);
+Route::get('/group-classes/{groupClass}', [GroupClassController::class, 'show']);
 
 // Проверка промокода
 Route::post('/coupons/check', function (\Illuminate\Http\Request $request) {
@@ -62,4 +67,8 @@ Route::middleware('auth:jwt')->group(function () {
     Route::get('/memberships', [MembershipController::class, 'index']);
 
     Route::get('/classes', fn() => Form::with('service')->get());
+
+    // Административные эндпоинты для групповых занятий
+    Route::apiResource('group-classes', GroupClassController::class)
+        ->only(['store', 'update', 'destroy']);
 });

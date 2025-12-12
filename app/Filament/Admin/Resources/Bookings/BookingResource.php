@@ -28,20 +28,36 @@ protected static ?string $model = Booking::class;
     protected static ?string $navigationLabel = 'Бронирования';
 
     public static function getRecordTitle(?Model $record): ?string
-{
-    if (!$record) {
-        return null;
+    {
+        if (!$record) {
+            return null;
+        }
+
+        if (!$record instanceof Booking) {
+            return $record->getKey();
+        }
+
+        $userName = $record->user?->name ?? 'Клиент';
+
+        // Определяем тип тренировки
+        if ($record->group_class_id) {
+            // Групповая тренировка
+            $serviceTitle = $record->groupClass?->service?->title ?? 'Групповая тренировка';
+            $trainerName = $record->groupClass?->trainer?->name;
+            $trainingTitle = $serviceTitle . ($trainerName ? ' с ' . $trainerName : '');
+        } elseif ($record->class_id) {
+            // Форма тренировки
+            $serviceTitle = $record->form?->service?->title ?? 'Групповая тренировка';
+            $trainerName = $record->form?->trainer?->name;
+            $trainingTitle = $serviceTitle . ($trainerName ? ' с ' . $trainerName : '');
+        } else {
+            // Персональная тренировка
+            $trainerName = $record->trainer?->name ?? 'Тренер';
+            $trainingTitle = 'Персональная тренировка с ' . $trainerName;
+        }
+
+        return $userName . ' → ' . $trainingTitle;
     }
-
-    return match (true) {
-
-        $record instanceof Booking =>
-            ($record->user?->name ?? 'Клиент') . ' → ' .
-            ($record->class?->service?->title ?? 'Персональная тренировка'),
-
-        default => $record->getKey(),
-    };
-}
 
     public static function form(Schema $schema): Schema
     {
@@ -51,17 +67,24 @@ protected static ?string $model = Booking::class;
                     ->relationship('user', 'email')
                     ->required(),
                 Select::make('class_id')
-                    ->relationship('class.service', 'title'),
+                    ->relationship('class.service', 'title')
+                    ->label('Форма тренировки'),
+                Select::make('group_class_id')
+                    ->relationship('groupClass.service', 'title')
+                    ->label('Групповое занятие'),
                 Select::make('trainer_id')
-                    ->relationship('trainer.user', 'name'),
+                    ->relationship('trainer', 'name')
+                    ->label('Тренер'),
                 Select::make('status')
                     ->options([
-                        'pending' => 'Ожидает',
-                        'confirmed' => 'Подтверждено',
-                        'cancelled' => 'Отменено',
+                        \App\Models\Booking::STATUS_PENDING => 'Ожидает',
+                        \App\Models\Booking::STATUS_CONFIRMED => 'Подтверждено',
+                        \App\Models\Booking::STATUS_CANCELLED => 'Отменено',
                         'completed' => 'Завершено',
-                    ]),
-                Textarea::make('note'),
+                    ])
+                    ->label('Статус'),
+                Textarea::make('note')
+                    ->label('Примечания'),
             ]);
     }
 
@@ -69,14 +92,27 @@ protected static ?string $model = Booking::class;
     {
         return $table
             ->columns([
-                TextColumn::make('user.email'),
-                TextColumn::make('class.service.title')
-                    ->label('Занятие'),
+                TextColumn::make('user.email')
+                    ->label('Пользователь'),
+                TextColumn::make('training_type')
+                    ->label('Тип')
+                    ->formatStateUsing(function ($state) {
+                        return match($state) {
+                            'group' => 'Групповая',
+                            'form' => 'Групповая (форма)',
+                            'personal' => 'Персональная',
+                            default => 'Неизвестно',
+                        };
+                    }),
+                TextColumn::make('training_description')
+                    ->label('Занятие')
+                    ->wrap(),
                 BadgeColumn::make('status')
+                    ->label('Статус')
                     ->colors([
-                        'warning' => 'pending',
-                        'success' => 'confirmed',
-                        'danger' => 'cancelled',
+                        'warning' => \App\Models\Booking::STATUS_PENDING,
+                        'success' => \App\Models\Booking::STATUS_CONFIRMED,
+                        'danger' => \App\Models\Booking::STATUS_CANCELLED,
                     ]),
             ])
             ->actions([

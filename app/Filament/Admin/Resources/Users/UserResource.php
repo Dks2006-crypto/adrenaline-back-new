@@ -64,16 +64,12 @@ class UserResource extends Resource
                         ->visibility('public'),
 
                     TextInput::make('email')->email()->required(),
-                    TextInput::make('password')
-                        ->password()
-                        ->dehydrated(fn($state) => filled($state))
-                        ->confirmed(),
 
                     TextInput::make('name')->required(),
                     TextInput::make('last_name'),
                     DatePicker::make('birth_date'),
                     Select::make('gender')
-                        ->options(['male' => 'Муж', 'female' => 'Жен', 'other' => 'Другое']),
+                        ->options(['male' => 'Муж', 'female' => 'Жен']),
                     TextInput::make('phone'),
                 ]),
 
@@ -101,20 +97,6 @@ class UserResource extends Resource
                     TagsInput::make('specialties')
                         ->label('Специализации')
                         ->placeholder('Йога, Пилатес, TRX...'),
-
-                    TextInput::make('rating')
-                        ->numeric()
-                        ->step(0.1)
-                        ->minValue(0)
-                        ->maxValue(5)
-                        ->label('Рейтинг')
-                        ->helperText('От 0 до 5'),
-
-                    TextInput::make('reviews_count')
-                        ->numeric()
-                        ->integer()
-                        ->default(0)
-                        ->label('Количество отзывов'),
                 ]),
         ]);
     }
