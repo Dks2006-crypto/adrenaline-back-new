@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $admin = User::create([
             'email' => 'admin@fitness.ru',
             'password' => bcrypt('password'),
+            'phone' => '+7 (999) 123-45-67',
             'name' => 'Админ',
             'role_id' => Role::where('name', 'admin')->first()->id,
             'confirmed_at' => now(),
@@ -38,6 +39,7 @@ class DatabaseSeeder extends Seeder
         $trainerUser = User::create([
             'email' => 'trainer@fitness.ru',
             'password' => bcrypt('password'),
+            'phone' => '+7 (999) 123-45-67',
             'name' => 'Алексей',
             'last_name' => 'Тренеров',
             'role_id' => Role::where('name', 'trainer')->first()->id,
