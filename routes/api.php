@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\TrainerController;
 use App\Http\Controllers\Api\SectionSettingController;
 use App\Http\Controllers\Api\GroupClassController;
 use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\SiteSettingsController;
 use App\Models\Form;
 use App\Models\Service;
 use App\Models\Coupon;
@@ -31,6 +32,8 @@ Route::get('/group-classes', [GroupClassController::class, 'indexPublic']);
 Route::get('/group-classes/{groupClass}', [GroupClassController::class, 'show']);
 
 Route::get('/gallery', [GalleryController::class, 'index']);
+
+Route::get('/site-settings', [SiteSettingsController::class, 'index']);
 
 // Проверка промокода
 Route::post('/coupons/check', function (\Illuminate\Http\Request $request) {
