@@ -82,6 +82,20 @@ class AuthController extends Controller
         ]);
     }
 
+    public function update(Request $request)
+    {
+        $user = auth('jwt')->user();
+
+        $data = $request->validate([
+            'bio' => 'nullable|string',
+            'metadata' => 'nullable|array',
+        ]);
+
+        $user->update($data);
+
+        return response()->json(['success' => true]);
+    }
+
     // ← ВСПОМОГАТЕЛЬНЫЙ МЕТОД — пиши один раз и используй везде
     protected function respondWithToken($token, $user)
     {

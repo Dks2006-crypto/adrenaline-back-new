@@ -66,6 +66,8 @@ Route::apiResource('bookings', BookingController::class)->only(['index', 'store'
 Route::middleware('auth:jwt')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('api.logout');
     Route::get('/me', [AuthController::class, 'me'])->name('api.me');
+    Route::put('/me', [AuthController::class, 'update']);
+    Route::patch('/me', [AuthController::class, 'update']);
     Route::post('/me/avatar', [AuthController::class, 'updateAvatar']);
 
     Route::get('/trainer/bookings', [TrainerController::class, 'indexBookings']);
