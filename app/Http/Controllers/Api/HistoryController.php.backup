@@ -1,0 +1,337 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Models\Booking;
+use App\Models\Attendance;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+class HistoryController extends Controller
+{
+    public function index(Request $request)
+    {
+        $user = Auth::guard('jwt')->user();
+
+        $query = Booking::query()
+            ->where('user_id', $user->id)
+            ->with([
+                'form.service',
+                'form.trainer',
+                'groupClass.service',
+                'groupClass.trainer',
+                'trainer',
+                'attendance'
+            ])
+-------
+            ->orderBy('created_at', 'desc');
+
+        // Фильтрация по датам
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Фильтрация по статусу
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Фильтрация по типу
+        if ($request->filled('type')) {
+            if ($request->type === 'group') {
+                $query->where(function ($q) {
+                    $q->whereNotNull('class_id')
+                      ->orWhereNotNull('group_class_id');
+                });
+            } elseif ($request->type === 'personal') {
+                $query->whereNull('class_id')
+                      ->whereNull('group_class_id');
+            }
+        }
+
+        $bookings = $query->get();
+
+        $history = $bookings->map(function ($booking) {
+            return $this->formatHistoryEntry($booking);
+        });
+
+        return response()->json($history);
+    }
+
+    public function trainer(Request $request)
+    {
+        $user = Auth::guard('jwt')->user();
+
+        // Проверяем, что пользователь - тренер
+        if ($user->role_id !== 2) {
+            return response()->json(['error' => 'Доступ запрещен'], 403);
+        }
+
+        $query = Booking::query()
+            ->where('trainer_id', $user->id)
+            ->with([
+                'user',
+                'form.service',
+                'form.trainer',
+                'groupClass.service',
+                'groupClass.trainer',
+                'attendance'
+            ])
+            ->latest();
+
+        // Фильтрация по датам
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Фильтрация по статусу
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Фильтрация по типу
+        if ($request->filled('type')) {
+            if ($request->type === 'group') {
+                $query->where(function ($q) {
+                    $q->whereNotNull('class_id')
+                      ->orWhereNotNull('group_class_id');
+                });
+            } elseif ($request->type === 'personal') {
+                $query->whereNull('class_id')
+                      ->whereNull('group_class_id');
+            }
+        }
+
+        $bookings = $query->get();
+
+        $history = $bookings->map(function ($booking) {
+            return $this->formatHistoryEntryForTrainer($booking);
+        });
+
+        return response()->json($history);
+    }
+
+    public function client(Request $request)
+    {
+        $user = Auth::guard('jwt')->user();
+
+        $query = Booking::query()
+            ->where('user_id', $user->id)
+            ->with([
+                'form.service',
+                'form.trainer',
+                'groupClass.service',
+                'groupClass.trainer',
+                'trainer',
+                'attendance'
+            ])
+            ->latest();
+
+        // Фильтрация по датам
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        // Фильтрация по статусу
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Фильтрация по типу
+        if ($request->filled('type')) {
+            if ($request->type === 'group') {
+                $query->where(function ($q) {
+                    $q->whereNotNull('class_id')
+                      ->orWhereNotNull('group_class_id');
+                });
+            } elseif ($request->type === 'personal') {
+                $query->whereNull('class_id')
+                      ->whereNull('group_class_id');
+            }
+        }
+
+        $bookings = $query->get();
+
+        $history = $bookings->map(function ($booking) {
+            return $this->formatHistoryEntry($booking);
+        });
+
+        return response()->json($history);
+    }
+
+    public function stats()
+    {
+        $user = Auth::guard('jwt')->user();
+
+        $bookings = Booking::where('user_id', $user->id)->get();
+
+        $stats = [
+            'total_sessions' => $bookings->count(),
+            'completed_sessions' => $bookings->where('status', 'confirmed')->count(),
+            'cancelled_sessions' => $bookings->where('status', 'cancelled')->count(),
+            'no_show_sessions' => 0, // Нужно будет определить логику для no_show
+            'total_hours' => 0, // Нужно будет рассчитать на основе времени занятий
+            'average_rating' => null,
+        ];
+
+        return response()->json($stats);
+    }
+
+    private function formatHistoryEntry($booking)
+    {
+        // Определяем статус занятия
+        $status = $this->getStatus($booking);
+
+        // Формируем описание тренировки
+        $description = $this->getTrainingDescription($booking);
+
+        // Определяем тренера
+        $trainer = $this->getTrainer($booking);
+
+        // Определяем тип тренировки
+        $type = $this->getTrainingType($booking);
+
+        return [
+            'id' => $booking->id,
+            'date' => $booking->created_at->format('Y-m-d'),
+            'created_at' => $booking->created_at->toISOString(),
+            'training_description' => $description,
+            'status' => $status,
+            'type' => $type,
+            'trainer' => $trainer,
+            'note' => $booking->note,
+            'start_time' => $booking->created_at->format('H:i'),
+            'end_time' => $booking->created_at->addHour()->format('H:i'),
+        ];
+    }
+
+    private function formatHistoryEntryForTrainer($booking)
+    {
+        // Определяем статус занятия
+        $status = $this->getStatus($booking);
+
+        // Формируем описание тренировки
+        $description = $this->getTrainingDescription($booking);
+
+        // Определяем клиента
+        $client = $booking->user ? [
+            'id' => $booking->user->id,
+            'name' => $booking->user->name,
+            'last_name' => $booking->user->last_name,
+        ] : null;
+
+        // Определяем тип тренировки
+        $type = $this->getTrainingType($booking);
+
+        return [
+            'id' => $booking->id,
+            'date' => $booking->created_at->format('Y-m-d'),
+            'created_at' => $booking->created_at->toISOString(),
+            'training_description' => $description,
+            'status' => $status,
+            'type' => $type,
+            'client' => $client,
+            'note' => $booking->note,
+            'start_time' => $booking->created_at->format('H:i'),
+            'end_time' => $booking->created_at->addHour()->format('H:i'),
+        ];
+    }
+
+    private function getStatus($booking)
+    {
+        // Если есть attendance, значит занятие прошло
+        if ($booking->attendance && $booking->attendance->checked_in_at) {
+            return 'completed';
+        }
+
+        // Если отменено
+        if ($booking->status === 'cancelled') {
+            return 'cancelled';
+        }
+
+        // Для завершенных по умолчанию (так как мы показываем историю)
+        return 'completed';
+    }
+
+    private function getTrainingDescription($booking)
+    {
+        $description = '';
+
+        // Определяем тип и добавляем описание
+        if ($booking->group_class_id) {
+            $description = 'Групповая тренировка';
+            if ($booking->groupClass && $booking->groupClass->service) {
+                $description .= ' - ' . $booking->groupClass->service->title;
+            }
+            if ($booking->groupClass && $booking->groupClass->trainer) {
+                $description .= ' с ' . $booking->groupClass->trainer->name;
+            }
+        } elseif ($booking->class_id) {
+            $description = 'Групповая тренировка';
+            if ($booking->form && $booking->form->service) {
+                $description .= ' - ' . $booking->form->service->title;
+            }
+            if ($booking->form && $booking->form->trainer) {
+                $description .= ' с ' . $booking->form->trainer->name;
+            }
+        } else {
+            $description = 'Персональная тренировка';
+            if ($booking->trainer) {
+                $description .= ' с ' . $booking->trainer->name;
+            }
+        }
+
+        return $description;
+    }
+
+    private function getTrainer($booking)
+    {
+        if ($booking->group_class_id && $booking->groupClass && $booking->groupClass->trainer) {
+            return [
+                'id' => $booking->groupClass->trainer->id,
+                'name' => $booking->groupClass->trainer->name,
+                'last_name' => $booking->groupClass->trainer->last_name,
+            ];
+        }
+
+        if ($booking->class_id && $booking->form && $booking->form->trainer) {
+            return [
+                'id' => $booking->form->trainer->id,
+                'name' => $booking->form->trainer->name,
+                'last_name' => $booking->form->trainer->last_name,
+            ];
+        }
+
+        if ($booking->trainer) {
+            return [
+                'id' => $booking->trainer->id,
+                'name' => $booking->trainer->name,
+                'last_name' => $booking->trainer->last_name,
+            ];
+        }
+
+        return null;
+    }
+
+    private function getTrainingType($booking)
+    {
+        if ($booking->group_class_id || $booking->class_id) {
+            return 'group';
+        }
+
+        return 'personal';
+    }
+}

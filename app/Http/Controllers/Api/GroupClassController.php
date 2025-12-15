@@ -29,8 +29,20 @@ class GroupClassController extends Controller
         return response()->json($groupClasses);
     }
 
-    // Получение информации о конкретном групповом занятии
+    // Получение информации о конкретном групповом занятии (публичный доступ)
     public function show(GroupClass $groupClass)
+    {
+        $groupClass->load(['trainer:id,name,last_name,avatar', 'service:id,title', 'bookings']);
+        $groupClass->available_slots = $groupClass->availableSlots();
+        $groupClass->trainer_avatar_url = $groupClass->trainer?->avatar
+            ? url('storage/' . $groupClass->trainer->avatar) . '?t=' . time()
+            : null;
+
+        return response()->json($groupClass);
+    }
+
+    // Получение информации о конкретном групповом занятии для админов (с аутентификацией)
+    public function showAdmin(GroupClass $groupClass)
     {
         $groupClass->load(['trainer:id,name,last_name,avatar', 'service:id,title', 'bookings']);
         $groupClass->available_slots = $groupClass->availableSlots();
@@ -52,10 +64,8 @@ class GroupClassController extends Controller
             'starts_at' => 'required|date|after:now',
             'ends_at' => 'required|date|after:starts_at',
             'capacity' => 'required|integer|min:1',
-            'price_cents' => 'required|integer|min:0',
             'currency' => 'required|string|size:3',
             'active' => 'boolean',
-            'recurrence_rule' => 'nullable|string',
         ]);
 
         $groupClass = GroupClass::create($validated);
@@ -77,10 +87,8 @@ class GroupClassController extends Controller
             'starts_at' => 'sometimes|date|after:now',
             'ends_at' => 'sometimes|date|after:starts_at',
             'capacity' => 'sometimes|integer|min:1',
-            'price_cents' => 'sometimes|integer|min:0',
             'currency' => 'sometimes|string|size:3',
             'active' => 'sometimes|boolean',
-            'recurrence_rule' => 'nullable|string',
         ]);
 
         $groupClass->update($validated);

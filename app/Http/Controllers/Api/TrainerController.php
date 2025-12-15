@@ -107,7 +107,7 @@ class TrainerController extends Controller
 
         // 3. Валидация нового статуса
         $request->validate([
-            'status' => 'required|in:' . \App\Models\Booking::STATUS_CONFIRMED . ',' . \App\Models\Booking::STATUS_CANCELLED,
+            'status' => 'required|in:' . Booking::STATUS_CONFIRMED . ',' . Booking::STATUS_CANCELLED,
         ]);
 
         // 4. Обновление статуса

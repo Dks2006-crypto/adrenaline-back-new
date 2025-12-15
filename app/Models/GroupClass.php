@@ -16,16 +16,13 @@ class GroupClass extends Model
         'starts_at',
         'ends_at',
         'capacity',
-        'price_cents',
         'currency',
-        'active',
-        'recurrence_rule'
+        'active'
     ];
 
     protected $casts = [
         'starts_at' => 'datetime:Y-m-d H:i:s',
         'ends_at'   => 'datetime:Y-m-d H:i:s',
-        'price_cents' => 'integer',
         'active' => 'boolean',
     ];
 

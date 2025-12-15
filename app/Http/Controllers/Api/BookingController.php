@@ -7,12 +7,16 @@ use App\Models\Booking;
 use App\Models\Form;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class BookingController extends Controller
 {
     public function store(Request $request)
     {
         try {
+            // Добавим отладочную информацию
+            Log::info('Booking request data:', $request->all());
+
             $request->validate([
                 'form_id'    => 'nullable|integer|exists:forms,id',
                 'trainer_id' => 'nullable|integer|exists:users,id',
@@ -23,6 +27,13 @@ class BookingController extends Controller
             $hasForm = $request->filled('form_id');
             $hasTrainer = $request->filled('trainer_id');
             $hasGroupClass = $request->filled('class_id');
+
+            Log::info('Booking validation:', [
+                'hasForm' => $hasForm,
+                'hasTrainer' => $hasTrainer,
+                'hasGroupClass' => $hasGroupClass,
+                'request_data' => $request->all()
+            ]);
 
             if (!$hasForm && !$hasTrainer && !$hasGroupClass) {
                 return response()->json(['error' => 'Необходимо указать занятие или тренера'], 400);

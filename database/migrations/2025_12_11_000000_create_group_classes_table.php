@@ -20,10 +20,8 @@ return new class extends Migration
             $table->dateTime('starts_at');
             $table->dateTime('ends_at');
             $table->integer('capacity');
-            $table->integer('price_cents');
             $table->string('currency', 3)->default('RUB');
             $table->boolean('active')->default(true);
-            $table->string('recurrence_rule')->nullable();
             $table->timestamps();
         });
     }

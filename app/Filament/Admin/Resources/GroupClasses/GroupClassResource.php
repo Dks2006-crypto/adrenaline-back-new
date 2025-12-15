@@ -126,87 +126,6 @@ class GroupClassResource extends Resource
                     ])
                     ->columns(3),
 
-                Section::make('Повторение занятия')
-                    ->schema([
-                        ToggleButtons::make('recurrence_type')
-                            ->label('Тип повторения')
-                            ->options([
-                                'none' => 'Без повторения',
-                                'daily' => 'Ежедневно',
-                                'weekly' => 'Еженедельно',
-                                'custom_weekly' => 'По выбранным дням недели',
-                                'monthly' => 'Ежемесячно',
-                            ])
-                            ->default('none')
-                            ->inline()
-                            ->reactive(),
-
-                        Grid::make(1)
-                            ->schema([
-                                CheckboxList::make('weekly_days')
-                                    ->label('Дни недели')
-                                    ->options([
-                                        'MO' => 'Понедельник',
-                                        'TU' => 'Вторник',
-                                        'WE' => 'Среда',
-                                        'TH' => 'Четверг',
-                                        'FR' => 'Пятница',
-                                        'SA' => 'Суббота',
-                                        'SU' => 'Воскресенье',
-                                    ])
-                                    ->columns(4)
-                                    ->visible(fn($get) => $get('recurrence_type') === 'custom_weekly'),
-
-                                TextInput::make('repeat_count')
-                                    ->label('Количество повторений')
-                                    ->numeric()
-                                    ->default(4)
-                                    ->helperText('Сколько занятий создать (включая первое)')
-                                    ->visible(fn($get) => in_array($get('recurrence_type'), ['daily', 'weekly', 'custom_weekly', 'monthly'])),
-                            ])
-                            ->visible(fn($get) => $get('recurrence_type') !== 'none'),
-
-                        Placeholder::make('preview')
-                            ->label('Предпросмотр дат')
-                            ->content(function ($get) {
-                                $type = $get('recurrence_type');
-                                if ($type === 'none' || !$get('starts_at')) {
-                                    return '—';
-                                }
-
-                                $start = Carbon::parse($get('starts_at'));
-                                $count = (int) ($get('repeat_count') ?? 1);
-                                $days = $get('weekly_days') ?? [];
-
-                                $dates = [];
-
-                                for ($i = 0; $i < $count; $i++) {
-                                    $current = match ($type) {
-                                        'daily'         => $start->copy()->addDays($i),
-                                        'weekly'        => $start->copy()->addWeeks($i),
-                                        'custom_weekly' => $start->copy()->addWeeks($i),
-                                        'monthly'       => $start->copy()->addMonthsNoOverflow($i),
-                                        default         => $start,
-                                    };
-
-                                    if ($type === 'custom_weekly') {
-                                        $dayAbbr = $current->format('D'); // Mon, Tue...
-                                        $map = ['Mon' => 'MO', 'Tue' => 'TU', 'Wed' => 'WE', 'Thu' => 'TH', 'Fri' => 'FR', 'Sat' => 'SA', 'Sun' => 'SU'];
-                                        if (!in_array($map[$dayAbbr], $days)) {
-                                            continue;
-                                        }
-                                    }
-
-                                    $dates[] = $current->translatedFormat('d.m.Y (D)');
-                                }
-
-                                return $dates
-                                    ? 'Будет создано занятий: ' . implode(', ', $dates)
-                                    : 'Выберите хотя бы один день недели';
-                            })
-                            ->visible(fn($get) => in_array($get('recurrence_type'), ['daily', 'weekly', 'custom_weekly', 'monthly'])),
-                    ]),
-
                 Section::make('Бронирование и цена')
                     ->schema([
                         TextInput::make('capacity')
@@ -218,22 +137,6 @@ class GroupClassResource extends Resource
                             ->required()
                             ->default(10),
 
-                        TextInput::make('price_rub')
-                            ->label('Цена за занятие')
-                            ->numeric()
-                            ->suffix(' ₽')
-                            ->minValue(0)
-                            ->required()
-                            ->default(800)
-                            ->reactive()
-                            ->afterStateUpdated(fn($state, $set) => $set('price_cents', (int)($state * 100))),
-
-                        Hidden::make('price_cents')
-                            ->afterStateHydrated(
-                                fn($state, $set, $get) =>
-                                $set('price_rub', $state ? $state / 100 : null)
-                            )
-                            ->dehydrated(fn($state) => filled($state)),
 
                         Hidden::make('currency')
                             ->default('RUB'),
@@ -269,8 +172,6 @@ class GroupClassResource extends Resource
                 TextColumn::make('capacity')
                     ->label('Мест'),
 
-                TextColumn::make('price_cents')
-                    ->money('RUB', 100),
 
                 ToggleColumn::make('active'),
             ])

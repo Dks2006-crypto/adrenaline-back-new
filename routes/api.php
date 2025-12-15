@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\MembershipController;
 use App\Http\Controllers\Api\TrainerController;
 use App\Http\Controllers\Api\SectionSettingController;
 use App\Http\Controllers\Api\GroupClassController;
+use App\Http\Controllers\Api\HistoryController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\SiteSettingsController;
 use App\Models\Form;
@@ -78,7 +79,14 @@ Route::middleware('auth:jwt')->group(function () {
 
     Route::get('/classes', fn() => Form::with('service')->get());
 
+    // История занятий
+    Route::get('/history', [HistoryController::class, 'index']);
+    Route::get('/history/trainer', [HistoryController::class, 'trainer']);
+    Route::get('/history/client', [HistoryController::class, 'client']);
+    Route::get('/history/stats', [HistoryController::class, 'stats']);
+
     // Административные эндпоинты для групповых занятий
     Route::apiResource('group-classes', GroupClassController::class)
         ->only(['store', 'update', 'destroy']);
+    Route::get('/admin/group-classes/{groupClass}', [GroupClassController::class, 'showAdmin']);
 });

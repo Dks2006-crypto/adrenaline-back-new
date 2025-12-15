@@ -43,10 +43,8 @@ class GroupClassSeeder extends Seeder
                 'starts_at' => $startDate->copy()->setTime(9, 0),
                 'ends_at' => $startDate->copy()->setTime(10, 30),
                 'capacity' => 15,
-                'price_cents' => 80000,
                 'currency' => 'RUB',
                 'active' => true,
-                'recurrence_rule' => 'FREQ=WEEKLY;BYDAY=MO,WE,FR',
             ],
             [
                 'title' => 'Функциональный тренинг',
@@ -56,10 +54,8 @@ class GroupClassSeeder extends Seeder
                 'starts_at' => $startDate->copy()->addDays(1)->setTime(18, 0),
                 'ends_at' => $startDate->copy()->addDays(1)->setTime(19, 0),
                 'capacity' => 20,
-                'price_cents' => 100000,
                 'currency' => 'RUB',
                 'active' => true,
-                'recurrence_rule' => 'FREQ=WEEKLY;BYDAY=TU,TH',
             ],
             [
                 'title' => 'Пилатес',
@@ -69,10 +65,8 @@ class GroupClassSeeder extends Seeder
                 'starts_at' => $startDate->copy()->addDays(2)->setTime(10, 0),
                 'ends_at' => $startDate->copy()->addDays(2)->setTime(11, 0),
                 'capacity' => 12,
-                'price_cents' => 90000,
                 'currency' => 'RUB',
                 'active' => true,
-                'recurrence_rule' => 'FREQ=WEEKLY;BYDAY=SA',
             ],
             [
                 'title' => 'Кроссфит',
@@ -82,10 +76,8 @@ class GroupClassSeeder extends Seeder
                 'starts_at' => $startDate->copy()->addDays(3)->setTime(19, 0),
                 'ends_at' => $startDate->copy()->addDays(3)->setTime(20, 30),
                 'capacity' => 10,
-                'price_cents' => 120000,
                 'currency' => 'RUB',
                 'active' => true,
-                'recurrence_rule' => 'FREQ=WEEKLY;BYDAY=SU',
             ],
         ];
 
