@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\GroupClasses;
+namespace App\Filament\Resources\GroupClasses;
 
-use App\Filament\Admin\Resources\GroupClasses\Pages;
+use App\Filament\Resources\GroupClasses\Pages;
 use App\Models\GroupClass;
 use App\Models\Service;
 use App\Models\User;

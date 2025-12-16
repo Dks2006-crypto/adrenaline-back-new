@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Bookings;
+namespace App\Filament\Resources\Bookings;
 
-use App\Filament\Admin\Resources\Bookings\Pages\CreateBooking;
-use App\Filament\Admin\Resources\Bookings\Pages\EditBooking;
-use App\Filament\Admin\Resources\Bookings\Pages\ListBookings;
+use App\Filament\Resources\Bookings\Pages\CreateBooking;
+use App\Filament\Resources\Bookings\Pages\EditBooking;
+use App\Filament\Resources\Bookings\Pages\ListBookings;
 use App\Models\Booking;
 use BackedEnum;
 use Filament\Actions\DeleteAction;

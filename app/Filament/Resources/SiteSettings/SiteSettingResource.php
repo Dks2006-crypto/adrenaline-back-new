@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\SiteSettings;
+namespace App\Filament\Resources\SiteSettings;
 
-use App\Filament\Admin\Resources\SiteSettings\Pages\CreateSiteSetting;
-use App\Filament\Admin\Resources\SiteSettings\Pages\EditSiteSetting;
-use App\Filament\Admin\Resources\SiteSettings\Pages\ListSiteSettings;
+use App\Filament\Resources\SiteSettings\Pages\CreateSiteSetting;
+use App\Filament\Resources\SiteSettings\Pages\EditSiteSetting;
+use App\Filament\Resources\SiteSettings\Pages\ListSiteSettings;
 use App\Models\SiteSetting;
 use BackedEnum;
 use Filament\Forms\Form;

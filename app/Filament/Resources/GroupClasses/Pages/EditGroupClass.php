@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\GroupClasses\Pages;
+namespace App\Filament\Resources\GroupClasses\Pages;
 
-use App\Filament\Admin\Resources\GroupClasses\GroupClassResource;
+use App\Filament\Resources\GroupClasses\GroupClassResource;
 use Filament\Resources\Pages\EditRecord;
 
 class EditGroupClass extends EditRecord

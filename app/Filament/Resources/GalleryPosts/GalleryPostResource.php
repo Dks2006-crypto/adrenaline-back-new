@@ -40,10 +40,18 @@ class GalleryPostResource extends Resource
                             ->label('Заголовок')
                             ->required()
                             ->maxLength(255),
-                        TextInput::make('description')
+                        TextInput::make('subtitle')
                             ->label('Описание')
                             ->required()
                             ->maxLength(500),
+                        FileUpload::make('image')
+                            ->directory('gallery')
+                            ->disk('public')
+                            ->visibility('public')
+                            ->image()
+                            ->required(),
+                        Toggle::make('active')
+                            ->default(true),
                     ])
                     ->columns(2),
             ]);

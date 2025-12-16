@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Bookings\Pages;
+namespace App\Filament\Resources\Bookings\Pages;
 
-use App\Filament\Admin\Resources\Bookings\BookingResource;
+use App\Filament\Resources\Bookings\BookingResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\SectionSettings;
+namespace App\Filament\Resources\SectionSettings;
 
-use App\Filament\Admin\Resources\SectionSettings\Pages\EditSectionSetting;
+use App\Filament\Resources\SectionSettings\Pages\EditSectionSetting;
 use App\Models\SectionSetting;
 use BackedEnum;
 use Filament\Actions\EditAction;
@@ -105,7 +105,7 @@ class SectionSettingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \App\Filament\Admin\Resources\SectionSettings\Pages\ListSectionSettings::route('/'),
+            'index' => \App\Filament\Resources\SectionSettings\Pages\ListSectionSettings::route('/'),
             'edit' => EditSectionSetting::route('/{record}/edit'),
         ];
     }

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Services;
+namespace App\Filament\Resources\Services;
 
-use App\Filament\Admin\Resources\Services\Pages\CreateService;
-use App\Filament\Admin\Resources\Services\Pages\EditService;
-use App\Filament\Admin\Resources\Services\Pages\ListServices;
+use App\Filament\Resources\Services\Pages\CreateService;
+use App\Filament\Resources\Services\Pages\EditService;
+use App\Filament\Resources\Services\Pages\ListServices;
 use App\Models\Service;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\SectionSettings\Pages;
+namespace App\Filament\Resources\SectionSettings\Pages;
 
-use App\Filament\Admin\Resources\SectionSettings\SectionSettingResource;
+use App\Filament\Resources\SectionSettings\SectionSettingResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 

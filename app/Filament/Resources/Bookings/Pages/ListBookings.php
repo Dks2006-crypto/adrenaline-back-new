@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Bookings\Pages;
+namespace App\Filament\Resources\Bookings\Pages;
 
-use App\Filament\Admin\Resources\Bookings\BookingResource;
+use App\Filament\Resources\Bookings\BookingResource;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 
@@ -17,7 +17,7 @@ class ListBookings extends ListRecords
         ];
     }
 
-    protected function getTableQuery(): \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Relations\Relation|null
+   protected function getTableQuery(): ?\Illuminate\Database\Eloquent\Builder
     {
         return parent::getTableQuery()->with([
             'user',

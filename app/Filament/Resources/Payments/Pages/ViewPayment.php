@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Payments\Pages;
+namespace App\Filament\Resources\Payments\Pages;
 
-use App\Filament\Admin\Resources\Payments\PaymentResource;
+use App\Filament\Resources\Payments\PaymentResource;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
 

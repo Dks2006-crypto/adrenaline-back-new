@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Coupons\Pages;
+namespace App\Filament\Resources\Coupons\Pages;
 
-use App\Filament\Admin\Resources\Coupons\CouponResource;
+use App\Filament\Resources\Coupons\CouponResource;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 

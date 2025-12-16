@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Users\Pages;
+namespace App\Filament\Resources\Users\Pages;
 
-use App\Filament\Admin\Resources\Users\UserResource;
+use App\Filament\Resources\Users\UserResource;
 use App\Models\Role;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;

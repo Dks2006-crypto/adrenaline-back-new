@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Attendances;
+namespace App\Filament\Resources\Attendances;
 
-use App\Filament\Admin\Resources\Attendances\Pages\CreateAttendance;
-use App\Filament\Admin\Resources\Attendances\Pages\EditAttendance;
-use App\Filament\Admin\Resources\Attendances\Pages\ListAttendances;
-use App\Filament\Admin\Resources\Attendances\Pages\ViewAttendance;
+use App\Filament\Resources\Attendances\Pages\CreateAttendance;
+use App\Filament\Resources\Attendances\Pages\EditAttendance;
+use App\Filament\Resources\Attendances\Pages\ListAttendances;
+use App\Filament\Resources\Attendances\Pages\ViewAttendance;
 use App\Models\Attendance;
 use BackedEnum;
 use Filament\Actions\ViewAction;

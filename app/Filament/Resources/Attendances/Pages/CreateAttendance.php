@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Attendances\Pages;
+namespace App\Filament\Resources\Attendances\Pages;
 
-use App\Filament\Admin\Resources\Attendances\AttendanceResource;
+use App\Filament\Resources\Attendances\AttendanceResource;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateAttendance extends CreateRecord

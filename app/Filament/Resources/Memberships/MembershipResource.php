@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Memberships;
+namespace App\Filament\Resources\Memberships;
 
-use App\Filament\Admin\Resources\Memberships\Pages\CreateMembership;
-use App\Filament\Admin\Resources\Memberships\Pages\EditMembership;
-use App\Filament\Admin\Resources\Memberships\Pages\ListMemberships;
-use App\Filament\Admin\Resources\Memberships\Pages\ViewMembership;
+use App\Filament\Resources\Memberships\Pages\CreateMembership;
+use App\Filament\Resources\Memberships\Pages\EditMembership;
+use App\Filament\Resources\Memberships\Pages\ListMemberships;
+use App\Filament\Resources\Memberships\Pages\ViewMembership;
 use App\Models\Membership;
 use BackedEnum;
 use Filament\Actions\EditAction;

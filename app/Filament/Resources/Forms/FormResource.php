@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Forms;
+namespace App\Filament\Resources\Forms;
 
-use App\Filament\Admin\Resources\Forms\Pages\CreateForm;
-use App\Filament\Admin\Resources\Forms\Pages\EditForm;
-use App\Filament\Admin\Resources\Forms\Pages\ListForms;
+use App\Filament\Resources\Forms\Pages\CreateForm;
+use App\Filament\Resources\Forms\Pages\EditForm;
+use App\Filament\Resources\Forms\Pages\ListForms;
 use App\Models\Form as FormModel;
 use BackedEnum;
 use Filament\Actions\DeleteAction;

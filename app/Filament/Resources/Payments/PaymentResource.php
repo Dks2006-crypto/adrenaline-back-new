@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Admin\Resources\Payments;
+namespace App\Filament\Resources\Payments;
 
-use App\Filament\Admin\Resources\Payments\Pages\CreatePayment;
-use App\Filament\Admin\Resources\Payments\Pages\EditPayment;
-use App\Filament\Admin\Resources\Payments\Pages\ListPayments;
-use App\Filament\Admin\Resources\Payments\Pages\ViewPayment;
+use App\Filament\Resources\Payments\Pages\CreatePayment;
+use App\Filament\Resources\Payments\Pages\EditPayment;
+use App\Filament\Resources\Payments\Pages\ListPayments;
+use App\Filament\Resources\Payments\Pages\ViewPayment;
 use App\Models\Payment;
 use BackedEnum;
 use Filament\Actions\ViewAction;
