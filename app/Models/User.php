@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Filament\Models\Contracts\FilamentUser;
+use Filament\Panel;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, FilamentUser
 {
     use Notifiable;
 
@@ -39,6 +41,15 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     protected $hidden = ['password'];
+    
+    public function canAccessFilament(): bool
+    {
+        return $this->isAdmin();
+    }
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAdmin();
+    }
 
     protected $appends = ['avatar_url'];
 
