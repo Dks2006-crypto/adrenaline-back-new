@@ -126,8 +126,8 @@ class UserResource extends Resource
                     ->sortable(),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\DeleteAction::make(),
             ]);
     }
 

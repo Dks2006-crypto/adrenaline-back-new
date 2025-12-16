@@ -35,8 +35,8 @@ class MembershipResource extends Resource
                 BadgeColumn::make('status'),
             ])
             ->actions([
-                ViewAction::make(),
-                EditAction::make(),
+                \Filament\Tables\Actions\ViewAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
             ]);
     }
 

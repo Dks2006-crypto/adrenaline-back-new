@@ -51,7 +51,7 @@ class FormResource extends Resource
                     ->relationship('service', 'title')
                     ->required(),
                 Select::make('trainer_id')
-                    ->relationship('trainer.user', 'name'),
+                    ->relationship('trainer', 'name'),
                 DateTimePicker::make('starts_at')->required(),
                 DateTimePicker::make('ends_at')->required(),
                 TextInput::make('capacity')->numeric()->required(),
@@ -64,14 +64,14 @@ class FormResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('service.title'),
-                TextColumn::make('trainer.user.name'),
+                TextColumn::make('trainer.name'),
                 TextColumn::make('starts_at')
                     ->dateTime('d.m H:i'),
                 TextColumn::make('capacity'),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\DeleteAction::make(),
             ]);
     }
 

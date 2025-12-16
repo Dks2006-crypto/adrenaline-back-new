@@ -65,10 +65,10 @@ class BookingResource extends Resource
                     ->relationship('user', 'email')
                     ->required(),
                 Select::make('class_id')
-                    ->relationship('class.service', 'title')
+                    ->relationship('form.service', 'title') // <-- ИЗМЕНИТЬ НА 'form.service'
                     ->label('Форма тренировки'),
                 Select::make('group_class_id')
-                    ->relationship('groupClass.service', 'title')
+                    ->relationship('groupClass.service', 'title') // <-- И ЗДЕСЬ
                     ->label('Групповое занятие'),
                 Select::make('trainer_id')
                     ->relationship('trainer', 'name')
@@ -114,8 +114,8 @@ class BookingResource extends Resource
                     ]),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\DeleteAction::make(),
             ]);
     }
 

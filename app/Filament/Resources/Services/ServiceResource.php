@@ -130,8 +130,8 @@ class ServiceResource extends Resource
                     ->label('Активен'),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 ActionsBulkActionGroup::make([

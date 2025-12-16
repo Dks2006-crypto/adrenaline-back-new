@@ -92,7 +92,7 @@ class SectionSettingResource extends Resource
                     ->dateTime('d.m.Y H:i'),
             ])
             ->actions([
-                EditAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
             ])
             ->defaultSort('sort_order');
     }

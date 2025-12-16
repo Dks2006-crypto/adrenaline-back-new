@@ -48,7 +48,7 @@ class AttendanceResource extends Resource
                     ->label('Выход'),
             ])
             ->actions([
-                ViewAction::make(),
+                \Filament\Tables\Actions\ViewAction::make(),
             ])
             ->filters([
                 TernaryFilter::make('checked_in_at')

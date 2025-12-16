@@ -39,7 +39,7 @@ class PaymentResource extends Resource
                 TextColumn::make('created_at')->dateTime('d.m H:i'),
             ])
             ->actions([
-                ViewAction::make(),
+                \Filament\Tables\Actions\ViewAction::make(),
             ]);
     }
 

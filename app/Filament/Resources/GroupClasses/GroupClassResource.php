@@ -172,8 +172,8 @@ class GroupClassResource extends Resource
                 \Filament\Tables\Columns\ToggleColumn::make('active'),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\DeleteAction::make(),
             ]);
     }
 

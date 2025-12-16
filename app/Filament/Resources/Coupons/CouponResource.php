@@ -56,8 +56,8 @@ class CouponResource extends Resource
                 TextColumn::make('usage_limit'),
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                \Filament\Tables\Actions\EditAction::make(),
+                \Filament\Tables\Actions\DeleteAction::make(),
             ]);
     }
 
