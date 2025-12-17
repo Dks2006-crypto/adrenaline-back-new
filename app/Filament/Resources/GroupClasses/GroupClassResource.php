@@ -72,7 +72,8 @@ class GroupClassResource extends Resource
                             ->displayFormat('d.m.Y')
                             ->firstDayOfWeek(1)
                             ->closeOnDateSelection()
-                            ->reactive(),
+                            ->reactive()
+                            ->dehydrateStateUsing(fn ($state) => Carbon::parse($state)->toDateString()),
 
                         TimePicker::make('time_start')
                             ->label('Начало')
@@ -93,31 +94,69 @@ class GroupClassResource extends Resource
                             ->after('time_start')
                             ->reactive(),
 
-                        // Автоматически собираем дату+время в нужные поля
+                        // Автоматически собираем дату+время в нужные поля STARTS_AT
                         Hidden::make('starts_at')
                             ->dehydrated(true)
-                            ->afterStateHydrated(
-                                fn($state, $set, $record) =>
-                                $record?->starts_at && $set('time_start', $record->starts_at->format('H:i'))
-                            )
+                            ->afterStateHydrated(function ($state, $set, $record) {
+                                if ($record?->starts_at) {
+                                    $set('time_start', $record->starts_at->format('H:i'));
+                                    $set('date', $record->starts_at->toDateString());
+                                }
+                            })
                             ->mutateDehydratedStateUsing(
-                                fn($state, $get) =>
-                                $get('date') && $get('time_start')
-                                    ? \Carbon\Carbon::createFromFormat('Y-m-d H:i', $get('date') . ' ' . $get('time_start'))
-                                    : null
+                                function ($state, $get) {
+                                    $date = $get('date');
+                                    $time_start = $get('time_start');
+                        
+                                    if (!$date || !$time_start) {
+                                        return null;
+                                    }
+                        
+                                    // *** ИСПРАВЛЕНИЕ #1: Гарантируем чистую дату Y-m-d ***
+                                    $parsed_date = \Carbon\Carbon::parse($date)->toDateString();
+                                    
+                                    // *** ИСПРАВЛЕНИЕ #2: Гарантируем чистое время H:i ***
+                                    $parsed_time_start = \Carbon\Carbon::parse($time_start)->format('H:i');
+                        
+                                    $combined_string = $parsed_date . ' ' . $parsed_time_start;
+                        
+                                    return \Carbon\Carbon::createFromFormat(
+                                        'Y-m-d H:i', 
+                                        $combined_string
+                                    );
+                                }
                             ),
-
+                        
+                        // Автоматически собираем дату+время в нужные поля ENDS_AT
                         Hidden::make('ends_at')
                             ->dehydrated(true)
-                            ->afterStateHydrated(
-                                fn($state, $set, $record) =>
-                                $record?->ends_at && $set('time_end', $record->ends_at->format('H:i'))
-                            )
+                            ->afterStateHydrated(function ($state, $set, $record) {
+                                if ($record?->ends_at) {
+                                    $set('time_end', $record->ends_at->format('H:i'));
+                                }
+                            })
                             ->mutateDehydratedStateUsing(
-                                fn($state, $get) =>
-                                $get('date') && $get('time_end')
-                                    ? \Carbon\Carbon::createFromFormat('Y-m-d H:i', $get('date') . ' ' . $get('time_end'))
-                                    : null
+                                function ($state, $get) {
+                                    $date = $get('date');
+                                    $time_end = $get('time_end');
+                        
+                                    if (!$date || !$time_end) {
+                                        return null;
+                                    }
+                        
+                                    // *** ИСПРАВЛЕНИЕ #1: Гарантируем чистую дату Y-m-d ***
+                                    $parsed_date = \Carbon\Carbon::parse($date)->toDateString();
+                                    
+                                    // *** ИСПРАВЛЕНИЕ #2: Гарантируем чистое время H:i ***
+                                    $parsed_time_end = \Carbon\Carbon::parse($time_end)->format('H:i'); // Используем time_end
+                        
+                                    $combined_string = $parsed_date . ' ' . $parsed_time_end;
+                        
+                                    return \Carbon\Carbon::createFromFormat(
+                                        'Y-m-d H:i', 
+                                        $combined_string
+                                    );
+                                }
                             ),
                     ])
                     ->columns(3),

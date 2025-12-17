@@ -15,6 +15,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use UnitEnum;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Toggle;
 
 class GalleryPostResource extends Resource
 {
